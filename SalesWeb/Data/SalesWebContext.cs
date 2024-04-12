@@ -5,7 +5,7 @@ namespace SalesWeb.Data
 {
     public class SalesWebContext : DbContext
     {
-        public SalesWebContext (DbContextOptions<SalesWebContext> options)
+        public SalesWebContext(DbContextOptions<SalesWebContext> options)
             : base(options)
         {
         }

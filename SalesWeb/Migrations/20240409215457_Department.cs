@@ -7,6 +7,17 @@ namespace SalesWeb.Migrations
 {
     public partial class Department : Migration
     {
+        private int v1;
+        private string v2;
+
+        public Department() { }
+
+        public Department(int v1, string v2)
+        {
+            this.v1 = v1;
+            this.v2 = v2;
+        }
+
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.AlterDatabase()
