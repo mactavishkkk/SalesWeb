@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using SalesWeb.Data;
+using SalesWeb.Services;
 
 var str = $"Server=localhost;" +
           $"Database=development;" +
@@ -13,6 +14,7 @@ builder.Services.AddDbContext<SalesWebContext>(options =>
 
 //Add seeding services
 builder.Services.AddScoped<SeedingService>();
+builder.Services.AddScoped<SellerService>();
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
