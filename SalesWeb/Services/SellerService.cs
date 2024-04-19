@@ -1,6 +1,7 @@
 ﻿using SalesWeb.Data;
 using SalesWeb.Models;
 using Microsoft.EntityFrameworkCore;
+using SalesWeb.Services.Exceptions;
 
 namespace SalesWeb.Services
 {
@@ -27,6 +28,22 @@ namespace SalesWeb.Services
         public Seller FindById(int id)
         {
             return _context.Seller.Include(obj => obj.Department).FirstOrDefault(obj => obj.Id == id);
+        }
+
+        public void Update(Seller seller)
+        {
+            if (!_context.Seller.Any(x => x.Id == seller.Id))
+            {
+                throw new NotFoundException("Id not foud");
+            }
+            try
+            {
+                _context.Update(seller);
+                _context.SaveChanges();
+            } catch (DbConcurrencyException ex)
+            {
+                throw new DbConcurrencyException(ex.Message);
+            }
         }
 
         public void Remove(int id)
