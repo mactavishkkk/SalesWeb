@@ -1,7 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.AspNetCore.Localization;
 using SalesWeb.Data;
 using SalesWeb.Services;
+using System.Globalization;
 
 var str = $"Server=localhost;" +
           $"Database=development;" +
@@ -25,6 +27,15 @@ var app = builder.Build();
 // Add seeds to dabase
 using (var scope = app.Services.CreateScope())
 {
+    var enUs = new CultureInfo("en-US");
+    var localizationOptions = new RequestLocalizationOptions
+    {
+        DefaultRequestCulture = new RequestCulture(enUs),
+        SupportedCultures = new List<CultureInfo> { enUs },
+        SupportedUICultures = new List<CultureInfo> { enUs }
+    };
+    app.UseRequestLocalization(localizationOptions);
+
     var services = scope.ServiceProvider;
     try
     {
