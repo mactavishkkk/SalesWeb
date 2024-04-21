@@ -3,6 +3,7 @@ using SalesWeb.Models;
 using SalesWeb.Models.ViewModel;
 using SalesWeb.Services;
 using SalesWeb.Services.Exceptions;
+using System.Diagnostics;
 
 namespace SalesWeb.Controllers
 {
@@ -27,14 +28,14 @@ namespace SalesWeb.Controllers
         {
             if (id == null)
             {
-                return NotFound();
+                return RedirectToAction(nameof(Error), new { message = "Id not provided." });
             }
 
             var obj = _sellerService.FindById(id.Value);
 
             if (obj == null)
             {
-                return NotFound();
+                return RedirectToAction(nameof(Error), new { message = "Seller not found." });
             }
 
             return View(obj);
@@ -59,14 +60,14 @@ namespace SalesWeb.Controllers
         {
             if (id == null)
             {
-                return NotFound();
+                return RedirectToAction(nameof(Error), new { message = "Id not provided." });
             }
 
             var obj = _sellerService.FindById(id.Value);
 
             if (obj == null)
             {
-                return NotFound();
+                return RedirectToAction(nameof(Error), new { message = "Seller not found." });
             }
 
             List<Department> departments = _departmentService.FindAll();
@@ -81,18 +82,18 @@ namespace SalesWeb.Controllers
         {
             if (id != seller.Id)
             {
-                return BadRequest();
+                return RedirectToAction(nameof(Error), new { message = "Id provided not is equal the seller id." });
             }
             try
             {
                 _sellerService.Update(seller);
                 return RedirectToAction(nameof(Index));
-            } catch (NotFoundException)
+            } catch (NotFoundException e)
             {
-                return NotFound();
-            } catch (DbConcurrencyException)
+                return RedirectToAction(nameof(Error), new { message = e.Message });
+            } catch (DbConcurrencyException e)
             {
-                return NotFound();
+                return RedirectToAction(nameof(Error), new { message = e.Message });
             }
         }
 
@@ -100,14 +101,14 @@ namespace SalesWeb.Controllers
         {
             if (id == null)
             {
-                return NotFound();
+                return RedirectToAction(nameof(Error), new { message = "Id not provided." });
             }
 
             var obj = _sellerService.FindById(id.Value);
 
             if (obj == null)
             {
-                return NotFound();
+                return RedirectToAction(nameof(Error), new { message = "Seller not found." });
             }
 
             return View(obj);
@@ -119,6 +120,16 @@ namespace SalesWeb.Controllers
         {
             _sellerService.Remove(id);
             return RedirectToAction(nameof(Index));
+        }
+
+        public IActionResult Error(string message)
+        {
+            var viewModel = new ErrorViewModel
+            {
+                Message = message,
+                RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier
+            };
+            return View(viewModel);
         }
     }
 }
